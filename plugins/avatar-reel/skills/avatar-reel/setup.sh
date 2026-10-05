@@ -40,7 +40,7 @@ check() {
     elif [ "$(uname)" = "Darwin" ] && security find-generic-password -s "avatar-reel-$n" -a "$USER" >/dev/null 2>&1; then ok "$n (Keychain)"
     else bad "$n key: run  bash \"$0\" keys  in your own terminal, or export $V"; fi
   done
-  [ "$FAIL" = 0 ] && echo "Ready." || { echo "Fix the ✗ items above."; exit 1; }
+  [ "$FAIL" = 0 ] && echo "Ready." || { echo "Fix the ✗ items above, or run: bash \"$(dirname "$0")/doctor.sh\" --fix"; exit 1; }
 }
 
 case "$1" in keys) keys; exit;; check) check; exit;; -h|--help|"") sed -n 2,8p "$0" | sed 's/^# \{0,1\}//'; exit;; esac

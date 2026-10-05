@@ -1,6 +1,6 @@
 ---
 name: avatar-reel
-description: Build a 9:16 talking-head reel with the user's own AI avatar. Locked script → their cloned voice (ElevenLabs) → HeyGen lip-synced head → phrase-anchored edit with split-screen picture panels (coded motion graphics + B-roll clips) → karaoke captions → MP4 with a tight, continuous cadence. Use when the user says "avatar reel", "make a reel with my AI avatar", "AI talking head video", "make this script into a video with my avatar", "another reel like the last one", or hands over a script for their avatar to say. The script gets locked FIRST, before any credits are spent.
+description: Build (or troubleshoot) a 9:16 talking-head reel with the user's own AI avatar. Locked script → their cloned voice (ElevenLabs) → HeyGen lip-synced head → phrase-anchored edit with split-screen picture panels (coded motion graphics + B-roll clips) → karaoke captions → MP4 with a tight, continuous cadence. Use when the user says "avatar reel", "make a reel with my AI avatar", "AI talking head video", "make this script into a video with my avatar", "another reel like the last one", or hands over a script for their avatar to say. Also use it when an avatar reel build fails or the user says "avatar reel doctor" / "my reel isn't working". The script gets locked FIRST, before any credits are spent.
 ---
 
 # Avatar Reel: talking-head reel with your AI avatar
@@ -9,6 +9,7 @@ description: Build a 9:16 talking-head reel with the user's own AI avatar. Locke
 
 **Skill folder:** `${CLAUDE_PLUGIN_ROOT}/skills/avatar-reel/` (called `SKILL_DIR` below)
 - `setup.sh`: one-time setup (config, Playwright, key check)
+- `doctor.sh`: diagnoses the machine, config, API keys and a reel folder; `--fix` repairs what it safely can
 - `new-reel.sh`: scaffolds a reel build folder
 - `template/`: the build scripts copied into each reel
 - `library/broll/`: reusable B-roll clips (the building-inspector series)
@@ -192,6 +193,30 @@ Don't re-render the whole reel to change the niche. A chiropractor→plumber clo
 3. Render HeyGen for that line only, with 0.4s of silent pad each side. Splice the audio, the words and the head into the approved take at points on the 25fps grid that sit inside silences, with 2-frame dissolves. Shift every later timeline row by the length difference. Then run `tighten.py` → `build_gfx` → `assemble`.
 4. Swap the niche copy in `gfx/gfx.html` (business names, schema @type, hours, the AI query/answer, chips, sitemap leaves, "new patient/customer" wording).
 5. Check every B-roll clip for niche props. Crop them out, swap in a graphic, or make new clips.
+
+## Troubleshooting: run the doctor first
+
+When anything fails (or before a user's first reel), run:
+```bash
+bash "SKILL_DIR/doctor.sh" [reel-dir]          # diagnose: tools, ffmpeg filters, Chromium, config, live key + voice + credit check, reel folder
+bash "SKILL_DIR/doctor.sh" --fix [reel-dir]    # also repair: install Pillow/Playwright/Chromium, relink node_modules,
+                                               # restore lib/ and missing template files, rebuild vo.mp3, reset bad config values
+```
+Don't ask the user for a folder first: run it from the current directory, which it detects as a reel folder on its own, or pass the reel path if you know it. Key checks are free read-only API calls. It never spends credits or prints keys. Read its output to the user in plain words, apply `--fix`, and re-run until it says "All clear."
+
+| Symptom | Cause → fix |
+|---|---|
+| `ERR_MODULE_NOT_FOUND: playwright` | the reel's `node_modules` link broke → `doctor.sh --fix <reel>` |
+| `window.__seek is not a function` / a scene renders blank | a JavaScript error in `gfx/gfx.html` stops **every** scene. The doctor names the scene and the error. Fix that line. |
+| `anchor not found: "…"` | the phrase isn't in `audio/words.json` exactly as spoken (check contractions and spelling). `at()` only searches forward, so a phrase used earlier needs a more specific anchor. |
+| lips drift out of sync | the VO changed after HeyGen rendered (the doctor compares durations) → re-render with `node heygen.mjs --new`, or restore the VO that matches |
+| HeyGen timed out | re-run `node heygen.mjs`. It resumes polling the same job at no new charge. |
+| captions crash with no font | set `caption_font` in config.json, or `doctor.sh --fix` finds a heavy font |
+| 401 from ElevenLabs/HeyGen | bad or expired key → the user re-runs `setup.sh keys` in their own terminal |
+| "voice isn't in this account" | wrong voice ID, or a key from a different ElevenLabs account |
+| face too high/low under panels | change `face_top` in config.json, then `node assemble.mjs` (free) |
+| head looks soft | the avatar still is under 1920px tall → use a bigger image (costs a re-render) |
+| dead air or an "uh" | `python3 tighten.py [START-END]` (see "Fixes after the head is rendered") |
 
 ## Costs
 - **HeyGen:** about 3 API credits per second of video (about 150 for a 50s reel).

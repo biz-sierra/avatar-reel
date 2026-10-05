@@ -6,7 +6,7 @@ SLUG="$1"; [ -z "$SLUG" ] && { echo "usage: new-reel.sh <slug> [parent-dir]"; ex
 SKILL="$(cd "$(dirname "$0")" && pwd)"
 CFG_HOME="${AVATAR_REEL_HOME:-$HOME/.config/avatar-reel}"
 [ -f "$CFG_HOME/config.json" ] || { echo "No $CFG_HOME/config.json yet. Run: bash \"$SKILL/setup.sh\" --help"; exit 1; }
-[ -d "$CFG_HOME/node_modules/playwright" ] || { echo "Playwright isn't installed in $CFG_HOME. Run setup.sh again."; exit 1; }
+[ -d "$CFG_HOME/node_modules/playwright" ] || { echo "Playwright isn't installed in $CFG_HOME. Run: bash \"$SKILL/doctor.sh\" --fix"; exit 1; }
 DEST="${2:-$PWD}/$SLUG-reel"
 [ -e "$DEST" ] && { echo "exists: $DEST (pick another slug or parent dir)"; exit 1; }
 mkdir -p "$DEST"/{audio,clips,gfx/out,segs,out}

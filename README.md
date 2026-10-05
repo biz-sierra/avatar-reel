@@ -44,6 +44,14 @@ Ask Claude: **"set up avatar reel"**. It runs the setup check, asks for your voi
 - **macOS:** `bash ~/.claude/plugins/cache/sierra-exclusive/avatar-reel/*/skills/avatar-reel/setup.sh keys` (saves them to the Keychain, input hidden)
 - **Anywhere:** add `export ELEVENLABS_API_KEY=…` and `export HEYGEN_API_KEY=…` to your shell profile
 
+## If something doesn't work
+
+Ask Claude to **"run the avatar reel doctor"**. It checks your tools, ffmpeg, the video renderer, your config, your API keys and voice (free, read-only calls; it never spends credits or shows your keys) and the reel you're working on. Then it repairs what it safely can: it installs missing pieces, relinks broken folders and resets bad settings. You can also run it yourself:
+
+```
+bash ~/.claude/plugins/cache/sierra-exclusive/avatar-reel/*/skills/avatar-reel/doctor.sh --fix
+```
+
 ## Make a reel
 
 Ask Claude something like:
