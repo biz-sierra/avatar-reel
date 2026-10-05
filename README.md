@@ -1,8 +1,6 @@
 # Avatar Reel
 
-A free [Claude Code](https://claude.com/claude-code) plugin that turns a script into a **9:16 talking-head reel with your own AI avatar**: your cloned voice, a lip-synced head, picture panels that change with every sentence, karaoke captions, and a tight, continuous cadence with no dead air.
-
-You talk to Claude. Claude writes and locks the script with you, then renders the reel.
+**Avatar Reel** is a free [Claude Code](https://claude.com/claude-code) plugin that turns a script into a vertical talking-head reel starring your own AI avatar. Install it with `/plugin marketplace add biz-sierra/avatar-reel` and `/plugin install avatar-reel@sierra-exclusive`. Run a one-time setup with your ElevenLabs voice clone, your HeyGen API key and one photo of yourself looking into the camera. Then just tell Claude "make an avatar reel" and paste your script, or ask it to write one with you. Claude locks the script with you first, so nothing costs money until you approve it. Then it generates the voiceover in your cloned voice, tightens the pauses so the delivery sounds continuous and natural, and has HeyGen lip-sync your photo to it. Next it plans a picture for every line: full-face shots on the moments that need eye contact, and split-screen panels with motion graphics or B-roll on the rest, each anchored to the exact words being spoken. It adds word-by-word captions and hands you a finished 9:16 MP4 with a frame-by-frame QC sheet. Re-timing cuts or rewriting the graphics afterwards is free, and if anything breaks, "run the avatar reel doctor" finds the problem and fixes most issues automatically.
 
 ```
 script (locked with you)  →  your voice clone (ElevenLabs)  →  lip-synced head (HeyGen)
