@@ -88,4 +88,8 @@ You get `out/<name>-v1.mp4` in a `<name>-reel/` folder. Re-cutting the timing or
 
 ## License
 
-[CC BY-NC 4.0](LICENSE): free to use, share and adapt for non-commercial purposes, with attribution to Seth Gillen / Sierra Exclusive. The videos you make with it are yours.
+Free. [CC BY-NC 4.0](LICENSE) with one added permission:
+
+- ✅ **Make videos with it for anything:** your business, your personal brand, your clients. The videos are yours.
+- ✅ Share it, fork it, adapt it, with attribution to Seth Gillen / Sierra Exclusive.
+- ❌ Don't sell the plugin itself, or a repackaged version of it.
