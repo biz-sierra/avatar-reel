@@ -1,0 +1,253 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#00BF63;--r:#ff4d4d;--bg:#0b0f0d;--card:#141a17;--line:#26302b;--mut:#8f9a94}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;font-family:'DM Sans',sans-serif;color:#fff;overflow:hidden}
+body.panel{background:radial-gradient(120% 90% at 50% 0%,#12201a 0%,var(--bg) 60%)}
+body.panel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--g)}
+body.clear{background:transparent}
+.stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.kick{font-weight:700;letter-spacing:.22em;font-size:24px;color:var(--mut);text-transform:uppercase}
+.g{color:var(--g)} .r{color:var(--r)}
+.pill{display:inline-block;background:var(--g);color:#06120c;font-weight:900;border-radius:999px;padding:8px 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px}
+@keyframes in{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}70%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes out{from{opacity:1}to{opacity:0}}
+@keyframes unblur{from{filter:blur(18px);opacity:.55}to{filter:blur(0);opacity:1}}
+@keyframes ring{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+@keyframes strike{from{width:0}to{width:104%}}
+@keyframes type{from{width:0}to{width:var(--w)}}
+@keyframes floatup{0%{opacity:0;transform:translateY(40px)}15%{opacity:.85}85%{opacity:.85}100%{opacity:0;transform:translateY(-260px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes zoomin{from{transform:scale(1)}to{transform:scale(1.06)}}
+.gs{stroke:var(--g)}
+.a{animation-fill-mode:both;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+</style></head>
+<body><div id="root"></div>
+<script>
+const P = new URLSearchParams(location.search);
+const S = P.get("s");
+const num = k => parseFloat(P.get(k) || "0");
+if (P.get("accent")) document.documentElement.style.setProperty("--g", P.get("accent"));   // brand color from config.json
+document.body.className = P.get("clear") ? "clear" : "panel";
+const root = document.getElementById("root");
+const A = (name, d, delay, extra="") => `animation:${name} ${d}s ${delay}s both cubic-bezier(.2,.8,.2,1)${extra?","+extra:""};`;
+const html = s => root.innerHTML = s;
+
+// ---------- the Paperwork Triangle ----------
+function triangle(state, revealAt){ // state = number of labels unblurred at END; the newest animates at revealAt
+  const labels = [["THE BLUEPRINT","schema markup"],["THE GATE PASS","AI-crawler access"],["THE ADDRESS ON FILE","site ↔ Google profile"]];
+  const pos = [[540,92],[250,488],[830,488]];
+  const final = state === 4;
+  let s = `<svg width="1080" height="640" style="position:absolute;inset:0">
+    <path d="M540 150 L300 450 L780 450 Z" fill="none" class="gs" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"
+      stroke-dasharray="1600" style="${state===0?A('ring',1.1,0):''}"/></svg>
+    <div style="position:absolute;left:500px;top:290px;width:80px;height:80px;text-align:center;line-height:80px;font-size:64px;${final?A('pop',.5,revealAt):''}">${final?'<span class="g">✓</span>':'📋'}</div>
+    <div class="kick" style="position:absolute;left:0;right:0;top:584px;text-align:center;font-size:22px">THE PAPERWORK TRIANGLE</div>`;
+  labels.forEach(([t,sub],i)=>{
+    const shown = final || i < state; const anim = !final && i === state-1;
+    const [x,y] = pos[i];
+    s += `<div style="position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%);text-align:center;
+      ${shown ? (anim ? A('unblur',.55,revealAt) : '') : 'filter:blur(16px);opacity:.6;'}">
+      <div style="background:#fff;color:#000;font-weight:900;font-size:34px;padding:12px 26px;border-radius:999px;white-space:nowrap;${final?'box-shadow:0 0 0 5px var(--g);':''}">${t}</div>
+      <div style="margin-top:8px;font-size:24px;color:#cfd6d2">${sub}</div>
+      ${final?`<div style="position:absolute;right:-22px;top:-22px;width:46px;height:46px;border-radius:50%;background:var(--g);color:#000;font-weight:900;font-size:30px;line-height:46px;${A('pop',.4,revealAt+.15*i)}">✓</div>`:''}
+    </div>`;
+  });
+  if (state===0 && P.get("save")) s += `<div style="position:absolute;right:44px;top:40px;${A('pop',.45,num('save'))}"><span class="pill" style="font-size:30px">🔖 SAVE THIS</span></div>`;
+  html(s);
+}
+
+const scenes = {
+  tri0(){ triangle(0,0) }, tri1(){ triangle(1,.15) }, tri2(){ triangle(2,.15) }, tri3(){ triangle(3,.15) }, tri4(){ triangle(4,.2) },
+
+
+
+  igui(){ // transparent full-frame parody reel UI for the greyscale jargon beat
+    const words = ["JSON-LD","LocalBusiness schema","crawler directives","robots.txt","structured data","@context"];
+    html(`<div style="position:absolute;inset:0;background:linear-gradient(#0000 70%,#000a)"></div>
+    <div style="position:absolute;right:38px;bottom:430px;display:flex;flex-direction:column;gap:46px;align-items:center;font-size:30px;color:#fff;font-weight:700;text-shadow:0 2px 8px #000">
+      <div style="text-align:center"><div style="font-size:64px">♡</div>0</div>
+      <div style="text-align:center"><div style="font-size:58px">💬</div>0</div>
+      <div style="text-align:center"><div style="font-size:58px">➦</div>0</div></div>
+    <div style="position:absolute;left:40px;bottom:300px;font-size:34px;font-weight:700;text-shadow:0 2px 8px #000">@seo.jargon.guy <span style="border:2px solid #fff;border-radius:10px;padding:2px 12px;font-size:24px;margin-left:10px">Follow</span>
+      <div style="font-weight:400;font-size:28px;margin-top:10px;opacity:.9">today we're talking structured data implementation…</div></div>
+    <div style="position:absolute;left:40px;top:70px;font-size:30px;font-weight:700;opacity:.85">Reels</div>
+    ${words.map((w,i)=>`<div style="position:absolute;left:${[90,560,140,600,260,640][i]}px;top:${[700,620,860,820,980,950][i]}px;font-family:'JetBrains Mono';font-size:36px;color:#ddd;background:#0007;padding:6px 14px;border-radius:10px;${A('floatup',3.2,.4+i*1.1)}">${w}</div>`).join('')}`);
+  },
+
+  site(){ html(siteCard(250,0) + `<div class="kick" style="position:absolute;top:30px;width:100%;text-align:center">what customers see</div>`) },
+
+  code(){
+    const lines = [`{`,`  "@type": "Chiropractor",`,`  "name": "Northside Chiropractic",`,`  "addressLocality": "Sacramento",`,`  "openingHours": "Sa 09:00-13:00",`,`  "telephone": "+1-916-555-0142"`,`}`];
+    html(`<div style="position:absolute;left:30px;top:22px;width:470px" class="kick">what customers see</div>
+      <div style="position:absolute;left:580px;top:22px" class="kick"><span class="g">what Google reads</span></div>
+      <div style="position:absolute;left:30px;top:70px;transform:scale(.47);transform-origin:0 0">${siteCard(0,0,true)}</div>
+      <div class="card" style="position:absolute;left:560px;top:70px;width:490px;height:520px;padding:26px 22px;font-family:'JetBrains Mono';font-size:17px;line-height:1.9;color:#d7e3dc;${A('in',.4,.1)}">
+        <div style="color:var(--mut);font-size:16px;margin-bottom:8px">&lt;script type="application/ld+json"&gt;</div>
+        ${lines.map((l,i)=>`<div style="white-space:pre;overflow:hidden;${A('fade',.25,.5+i*.32)}">${l.replace(/"([^"]+)":/g,'<span class="g">"$1"</span>:')}</div>`).join('')}
+      </div>`);
+  },
+
+  contrast(){
+    const t = [num('c1'),num('c2'),num('c3')];
+    html(`<div style="position:absolute;top:70px;width:100%;text-align:center;${A('in',.4,0)}">
+        <span style="position:relative;display:inline-block;font-size:56px;font-weight:700;color:#cfd6d2">“We're passionate about quality.”
+        <span style="position:absolute;left:-2%;top:52%;height:7px;background:var(--r);border-radius:4px;${A('strike',.45,1.0)}"></span></span>
+        <div style="margin-top:10px;font-size:26px;color:var(--r);${A('fade',.3,1.3)}">Google learns nothing</div></div>
+      <div style="position:absolute;top:300px;width:100%;display:flex;justify-content:center;gap:22px">
+        ${[["@type","Chiropractor"],["city","Sacramento"],["hours","Sat 9–1"]].map(([k,v],i)=>`<div class="card" style="padding:22px 28px;border-color:var(--g);text-align:center;${A('pop',.4,t[i])}"><div style="font-family:'JetBrains Mono';font-size:22px;color:var(--g)">${k}</div><div style="font-size:42px;font-weight:900;margin-top:6px">${v}</div></div>`).join('')}
+      </div>
+      <div style="position:absolute;top:500px;width:100%;text-align:center;font-size:28px;color:var(--g);font-weight:700;${A('fade',.3,t[2]+.5)}">no guessing</div>`);
+  },
+
+  robots(){
+    const f = num('fix');
+    html(`<div class="kick" style="position:absolute;top:26px;width:100%;text-align:center">yoursite.com/robots.txt <span style="font-size:18px">(example)</span></div>
+     <div class="card" style="position:absolute;left:120px;right:120px;top:80px;height:400px;padding:34px 40px;font-family:'JetBrains Mono';font-size:40px;line-height:1.7;${A('in',.4,0)}">
+       <div style="position:relative;border-radius:10px;padding:0 14px;margin:0 -14px">
+         <div style="position:absolute;inset:0;background:#ff4d4d33;border-radius:10px;${A('fade',.3,.6,`out .3s ${f}s both`)}"></div>
+         <div style="position:absolute;inset:0;background:color-mix(in srgb,var(--g) 20%,transparent);border-radius:10px;${A('fade',.3,f)}"></div>
+         <div style="position:relative">User-agent: <b>GPTBot</b></div>
+         <div style="position:relative;height:68px">
+           <div style="position:absolute;${A('fade',.01,0,`out .2s ${f}s both`)}" class="r">Disallow: /</div>
+           <div style="position:absolute;${A('fade',.3,f+.1)}" class="g">Allow: /</div></div>
+       </div>
+       <div style="color:#8f9a94">User-agent: *</div><div style="color:#8f9a94">Allow: /</div>
+     </div>
+     <div style="position:absolute;top:510px;width:100%;text-align:center">
+       <span style="position:absolute;left:0;right:0;${A('pop',.4,.8,`out .2s ${f}s both`)}"><span class="pill" style="background:var(--r);color:#fff;font-size:32px">🔒 AI crawler blocked</span></span>
+       <span style="position:absolute;left:0;right:0;${A('pop',.4,f+.1)}"><span class="pill" style="font-size:32px">✓ AI crawler allowed</span></span></div>`);
+  },
+
+
+  nap(){
+    const f = num('fix');
+    const row = (a,b,bad) => `<div style="position:relative;height:50px;font-size:31px">
+      <span style="position:absolute;${bad?`color:#ff7a7a;${A('fade',.01,0,`out .25s ${f}s both`)}`:''}">${a}${bad?' ✗':''}</span>
+      ${bad?`<span style="position:absolute;color:#fff;${A('fade',.3,f+.05)}">${b} <span class="g">✓</span></span>`:''}</div>`;
+    const card = (title, rows, side) => `<div class="card" style="position:absolute;${side}:40px;top:96px;width:480px;height:430px;padding:30px;${A('in',.4,side==='left'?0:.25)}">
+      <div class="kick" style="margin-bottom:22px;color:#cfd6d2">${title}</div>${rows}</div>`;
+    html(`<div style="position:absolute;top:28px;width:100%;text-align:center;font-size:34px;font-weight:900"><span style="${A('fade',.01,0,`out .2s ${f}s both`)};position:absolute;left:0;right:0"><span class="r">Don't match</span> → which one is true?</span><span style="position:absolute;left:0;right:0;${A('fade',.3,f)}"><span class="g">Same name · same address · same phone</span></span></div>`
+     + card("Your website", row("Northside Chiropractic")+row("1420 J St, Suite 200")+row("Sacramento, CA")+row("(916) 555-0142"), "left")
+     + card("Google Business Profile", row("Northside Chiro & Wellness","Northside Chiropractic",1)+row("1420 J Street, Ste 2B","1420 J St, Suite 200",1)+row("Sacramento, CA")+row("(916) 555-0199","(916) 555-0142",1), "right"));
+  },
+
+  cited(){
+    html(`<div style="padding:110px 0 0 120px;font-size:62px;font-weight:900;line-height:1.5">
+      <div style="${A('in',.4,0)}">Your site <span style="color:var(--mut)">→</span> gets you <span class="g">cited</span>.</div>
+      <div style="${A('in',.4,num('b'))}">Your profile <span style="color:var(--mut)">→</span> gets you <span class="g">picked</span>.</div></div>`);
+  },
+
+  rrt(){
+    const res = num('res');
+    html(`<div class="card" style="position:absolute;left:70px;right:70px;top:46px;height:540px;padding:36px 44px;${A('in',.4,0)}">
+      <div style="font-size:40px;font-weight:900">Rich Results Test</div>
+      <div style="font-size:22px;color:var(--mut);margin-top:6px">Google's free structured-data checker</div>
+      <div style="display:flex;gap:16px;margin-top:34px">
+        <div style="flex:1;border:2px solid #3a4540;border-radius:14px;padding:16px 22px;font-family:'JetBrains Mono';font-size:30px;white-space:nowrap;overflow:hidden">
+          <span style="display:inline-block;overflow:hidden;vertical-align:bottom;--w:430px;${A('type',1.0,.5,'')}animation-timing-function:steps(16)">https://yoursite.com</span></div>
+        <div style="background:#2f3a35;border-radius:14px;padding:16px 26px;font-size:28px;font-weight:700;${A('fade',.2,1.6)}">TEST URL</div></div>
+      <div style="position:absolute;left:44px;top:280px;width:60px;height:60px;border:6px solid #3a4540;border-top-color:var(--g);border-radius:50%;animation:fade .2s 1.8s both, spin .8s linear 0s infinite, out .1s ${res}s both"></div>
+      <div style="position:absolute;left:44px;right:44px;top:270px;${A('in',.4,res)}">
+        <div style="font-size:58px;font-weight:900">0 items detected</div>
+        <div style="font-size:30px;color:#cfd6d2;margin-top:10px">No structured data found on this page</div>
+        <div style="margin-top:40px;${A('pop',.4,res+.9)}"><span class="pill" style="background:var(--r);color:#fff;font-size:34px">Your paperwork's blank</span></div></div>
+    </div>`);
+  },
+
+  form(){
+    const fill = P.get("fill") ? num('fill') : -1;
+    const f = [["Business type","Chiropractor"],["Location","Sacramento, CA"],["Hours","Mon–Sat"],["AI crawler access","Allowed"],["Matches Google profile","Yes"]];
+    html(`<div class="card" style="position:absolute;left:150px;right:150px;top:30px;height:580px;background:#f4f1e8;color:#1b1f1d;border:none;padding:30px 44px;${fill<0?A('in',.4,0):''}">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-weight:900;font-size:34px;letter-spacing:.04em">PAPERWORK FOR GOOGLE &amp; AI</div><div style="font-size:18px;color:#777">FORM SEI-01</div></div>
+      <div style="height:3px;background:#1b1f1d;margin:12px 0 18px"></div>
+      ${f.map(([k,v],i)=>`<div style="display:flex;align-items:flex-end;height:78px;border-bottom:2px dashed #b9b3a3">
+         <div style="width:330px;font-size:24px;color:#555;font-weight:700">${k}</div>
+         <div style="flex:1;font-size:36px;font-weight:900;color:#0a7a42;${fill<0?'opacity:0':A('fade',.25,fill+i*.32)}">${v}</div>
+         ${fill<0?'':`<div style="font-size:36px;color:var(--g);font-weight:900;${A('pop',.3,fill+i*.32+.12)}">✓</div>`}</div>`).join('')}
+      ${fill<0?`<div style="position:absolute;right:40px;bottom:30px;transform:rotate(-8deg);border:5px solid #c33;color:#c33;font-weight:900;font-size:36px;padding:4px 18px;border-radius:8px;${A('pop',.4,.9)}">BLANK</div>`
+              :`<div style="position:absolute;right:40px;bottom:26px;transform:rotate(-8deg);border:5px solid #00a454;color:#00a454;font-weight:900;font-size:36px;padding:4px 18px;border-radius:8px;${A('pop',.4,fill+1.9)}">EASY PICK</div>`}
+    </div>`);
+  },
+
+  callback(){ html(`<div style="position:absolute;left:0;right:0;bottom:40px;text-align:center;${A('pop',.4,.2)}"><span class="pill" style="font-size:34px">↑ remember this guy?</span></div>`) },
+};
+
+function siteCard(top, delay, big){
+  return `<div class="card" style="position:${big?'relative':'absolute'};${big?'':`left:40px;top:84px;`}width:1000px;height:${big?1080:520}px;overflow:hidden;background:#fbfaf7;color:#1b1f1d;${big?'':A('in',.5,delay)}">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:22px 34px;border-bottom:1px solid #e6e2d8"><b style="font-size:28px">Northside Chiropractic</b><span style="font-size:20px;color:#666">Services · About · Contact</span></div>
+    <div style="height:${big?520:300}px;background:linear-gradient(120deg,#d9e8df,#f1e6d6);display:flex;flex-direction:column;justify-content:center;padding-left:54px">
+      <div style="font-size:${big?78:56}px;font-weight:900;line-height:1.05">Feel better.<br>Move better.</div>
+      <div style="margin-top:22px"><span style="background:#1b1f1d;color:#fff;padding:14px 28px;border-radius:999px;font-size:24px;font-weight:700">Book now</span></div></div>
+    <div style="display:flex;gap:18px;padding:24px 34px">${["⭐ 4.9 rating","🌿 Family care","📍 Midtown"].map(t=>`<div style="flex:1;background:#fff;border:1px solid #e6e2d8;border-radius:14px;padding:${big?40:18}px;font-size:${big?30:22}px;font-weight:700">${t}</div>`).join('')}</div>
+    ${big?`<div style="padding:10px 34px;font-size:30px;color:#666;line-height:1.5">We're passionate about quality care for the whole family…</div>`:''}
+  </div>`;
+}
+
+
+Object.assign(scenes, {
+  switch(){
+    const off = num('off');
+    html(`<div class="card" style="position:absolute;left:90px;right:90px;top:60px;height:250px;padding:30px 40px;${A('in',.4,0)}">
+        <div class="kick" style="font-size:22px">Website settings › Crawlers</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:34px">
+          <div style="font-size:44px;font-weight:900">Let AI tools read my site</div>
+          <div style="position:relative;width:150px;height:80px;border-radius:999px;background:#2f3a35">
+            <div style="position:absolute;inset:0;border-radius:999px;background:var(--g);${A('out',.25,off)}"></div>
+            <div style="position:absolute;top:8px;left:78px;width:64px;height:64px;border-radius:50%;background:#fff;animation:sw .25s ${off}s both"></div>
+          </div></div></div>
+      <style>@keyframes sw{from{left:78px}to{left:8px}}</style>
+      <div style="position:absolute;left:0;right:0;top:350px;text-align:center">
+        <div style="position:absolute;left:0;right:0;${A('pop',.4,.5,`out .2s ${off}s both`)}"><span class="pill" style="font-size:40px">✓ AI can read your site</span></div>
+        <div style="position:absolute;left:0;right:0;${A('pop',.4,off+.15)}"><span class="pill" style="background:var(--r);color:#fff;font-size:40px">✗ Invisible to AI</span></div>
+      </div>
+      <div style="position:absolute;left:0;right:0;top:470px;text-align:center;font-size:30px;color:#cfd6d2;${A('fade',.3,off+.5)}">one switch most owners never look at</div>`);
+  },
+  answer(){
+    const a = num('a') || 1.4;
+    html(`<div class="kick" style="position:absolute;top:26px;width:100%;text-align:center">Asking AI · example</div>
+      <div style="position:absolute;right:70px;top:84px;max-width:760px;background:#2a3330;border-radius:26px 26px 6px 26px;padding:22px 30px;font-size:38px;${A('in',.4,.1)}">chiropractor open on Saturday near me</div>
+      <div class="card" style="position:absolute;left:70px;right:70px;top:230px;padding:28px 34px;font-size:36px;line-height:1.45;${A('in',.45,a)}">
+        <div style="font-size:24px;color:var(--mut);margin-bottom:10px">✦ AI answer</div>
+        Try <span style="background:color-mix(in srgb,var(--g) 20%,transparent);border-bottom:4px solid var(--g);font-weight:900">Eastside Chiropractic</span>. They're open Saturdays 9–1 and their reviews mention same-day visits.
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:26px;text-align:center;font-size:30px;color:var(--r);font-weight:700;${A('fade',.3,a+1.2)}">the shop across town, not you</div>`);
+  },
+  label(){
+    const t = [num('c1'),num('c2'),num('c3')];
+    html(`<div style="position:absolute;top:50px;width:100%;text-align:center;${A('in',.4,0)}">
+        <div style="font-size:50px;font-weight:900">A hidden label on every page</div>
+        <div style="font-size:28px;color:#cfd6d2;margin-top:10px">Customers never see it. Google reads it first.</div></div>
+      <div style="position:absolute;top:270px;width:100%;display:flex;justify-content:center;gap:22px">
+        ${[["What you do","Chiropractor"],["Where","Sacramento"],["When","Sat 9–1"]].map(([k,v],i)=>`<div class="card" style="padding:22px 30px;border-color:var(--g);text-align:center;${A('pop',.4,t[i])}"><div style="font-size:24px;color:var(--g);font-weight:700">${k}</div><div style="font-size:44px;font-weight:900;margin-top:6px">${v}</div></div>`).join('')}
+      </div>`);
+  },
+  sitemap(){
+    const nodes = [["Home",540,90],["Services",210,270],["About",430,270],["Reviews",650,270],["Contact",870,270],["Back pain",110,440],["Neck pain",310,440]];
+    const edges = [[0,1],[0,2],[0,3],[0,4],[1,5],[1,6]];
+    html(`<div class="kick" style="position:absolute;top:22px;width:100%;text-align:center">A map of every page</div>
+      <svg width="1080" height="640" style="position:absolute;inset:0">${edges.map(([a,b],i)=>`<line x1="${nodes[a][1]}" y1="${nodes[a][2]+30}" x2="${nodes[b][1]}" y2="${nodes[b][2]-30}" class="gs" stroke-width="5" stroke-dasharray="1000" style="${A('ring',.5,.25+i*.18)}"/>`).join('')}</svg>
+      ${nodes.map(([t,x,y],i)=>`<div style="position:absolute;left:${x-95}px;top:${y-32}px;width:190px;height:64px;line-height:64px;text-align:center;background:#fff;color:#000;font-weight:900;font-size:28px;border-radius:999px;${A('pop',.35,.1+i*.2)}">${t}</div>`).join('')}
+      <div style="position:absolute;left:520px;top:420px;white-space:nowrap;${A('pop',.4,1.8)}"><span class="pill" style="font-size:34px">✓ Google found every page</span></div>`);
+  },
+  call(){
+    html(`<style>@keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(6deg)}}</style>
+      <div class="card" style="position:absolute;left:220px;right:220px;top:60px;height:500px;text-align:center;padding-top:50px;${A('in',.35,0)}">
+        <div style="font-size:26px;color:var(--mut);letter-spacing:.2em">INCOMING CALL</div>
+        <div style="font-size:120px;margin:24px 0;display:inline-block;animation:ring .5s .3s 4 both">📞</div>
+        <div style="font-size:30px;color:#cfd6d2">New patient</div>
+        <div style="font-size:48px;font-weight:900;margin-top:6px">Eastside Chiropractic</div>
+      </div>`);
+  },
+});
+
+scenes[S]();
+// pause every animation; the renderer seeks them frame by frame
+window.__seek = t => document.getAnimations().forEach(a => { a.pause(); a.currentTime = t * 1000; });
+window.__seek(0);
+</script></body></html>

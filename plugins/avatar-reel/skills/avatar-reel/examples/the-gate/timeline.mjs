@@ -1,0 +1,26 @@
+// The Gate (BREAK, 49s) — the reel this skill was built from. Every cut is anchored to a spoken phrase.
+import { at, build } from "./reel-lib.mjs";   // (copied next to it by new-reel.sh)
+export const { segs, END } = build([
+  [0,                                "FULL"],
+  [at("one setting"),                "SPLIT", "switch", { off: "@invisible" }],
+  [at("That's not on you"),          "FULL"],
+  [at("Your site was built"),        "SPLIT", "site"],
+  [at("But Google and ChatGPT"),     "SPLIT", "code"],
+  [at("Think of a building"),        "SPLIT", "lib:inspector-door", { ss: 1.2 }],
+  [at("All he gets"),                "SPLIT", "form"],
+  [at("That setting is the gate"),   "SPLIT", "lib:inspector-gate", { ss: 0.6 }],
+  [at("One small file"),             "SPLIT", "robots", { fix: 99 }],
+  [at("switch in your"),             "SPLIT", "switch", { key: "switch2", off: "@stay out" }],
+  [at("Most owners have never"),     "FULL",  null, { zoom: 1.14 }],
+  [at("Gate locked"),                "SPLIT", "lib:inspector-gate", { ss: 2.3 }],
+  [at("to the shop across town"),    "SPLIT", "answer", { a: 1.3 }],
+  [at("Here's the paperwork"),       "FULL"],
+  [at("We open the gate"),           "SPLIT", "lib:inspector-walks-in", { ss: 3.7 }],
+  [at("hidden label"),               "SPLIT", "label", { c1: "@what you do", c2: "@where you are", c3: "@when you're open" }],
+  [at("We make your site"),          "SPLIT", "nap", { fix: "@match" }],
+  [at("And we hand Google"),         "SPLIT", "sitemap"],
+  [at("Your website isn't just"),    "FULL"],
+  [at("A machine reads"),            "SPLIT", "lib:inspector-blueprint", { ss: 1.0 }],
+  [at("And every week"),             "SPLIT", "lib:inspector-gate", { ss: 0.3 }],
+  [at("the shop across town gets"),  "SPLIT", "call"],
+]);

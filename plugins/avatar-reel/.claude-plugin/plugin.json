@@ -1,0 +1,11 @@
+{
+  "name": "avatar-reel",
+  "displayName": "Avatar Reel",
+  "version": "1.0.0",
+  "description": "Turn a script into a 9:16 talking-head reel with your own AI avatar: ElevenLabs voice clone, HeyGen lip-synced head, phrase-anchored picture panels, karaoke captions and a tight, continuous cadence.",
+  "author": { "name": "Seth Gillen, Sierra Exclusive", "url": "https://github.com/biz-sierra" },
+  "homepage": "https://github.com/biz-sierra/avatar-reel",
+  "repository": "https://github.com/biz-sierra/avatar-reel",
+  "license": "CC-BY-NC-4.0",
+  "keywords": ["video", "reels", "ai-avatar", "heygen", "elevenlabs", "talking-head", "short-form", "captions"]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "sierra-exclusive",
+  "description": "Free Claude Code plugins from Sierra Exclusive.",
+  "owner": { "name": "Sierra Exclusive", "url": "https://github.com/biz-sierra" },
+  "plugins": [
+    {
+      "name": "avatar-reel",
+      "source": "./plugins/avatar-reel",
+      "description": "Turn a script into a 9:16 talking-head reel with your own AI avatar: cloned voice, HeyGen lip-sync, picture panels, karaoke captions, tight cadence."
+    }
+  ]
+}

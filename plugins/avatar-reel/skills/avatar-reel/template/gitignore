@@ -1,0 +1,11 @@
+*.mp4
+*.mov
+*.mp3
+*.wav
+*.png
+node_modules
+lib/
+segs/
+out/
+clips/
+gfx/out/
